@@ -1,0 +1,70 @@
+/**************************************************
+IMPORTANT: YOU NEED QVSOURCE RUNNING AND WITH THE 
+YOUTUBE V2 CONNECTOR AUTHENTICATED IN ORDER TO 
+RELOAD THIS APPLICATION
+
+http://www.qvsource.com
+**************************************************/
+
+YouTubeConnectorV2_VideoSearch:
+LOAD
+	id as VideoSearch_id,
+	videoId as VideoSearch_videoId,
+	published as VideoSearch_published,
+	date#(left(published, 10) & mid(published, 12, 8), 'YYYY-MM-DDhh:mm:ss') as VideoSearch_published_qvdatetime,
+	date#(left(published, 10), 'YYYY-MM-DD') as VideoSearch_published_qvdate,
+	updated as VideoSearch_updated,
+	date#(left(updated, 10) & mid(updated, 12, 8), 'YYYY-MM-DDhh:mm:ss') as VideoSearch_updated_qvdatetime,
+	date#(left(updated, 10), 'YYYY-MM-DD') as VideoSearch_updated_qvdate,
+	title as VideoSearch_title,
+	media_descritption as VideoSearch_media_descritption,
+	author_name as VideoSearch_author_name,
+	author_uri as VideoSearch_author_uri,
+	comments_counthint as VideoSearch_comments_counthint,
+	rating_average as VideoSearch_rating_average,
+	rating_max as VideoSearch_rating_max,
+	rating_min as VideoSearch_rating_min,
+	rating_numRaters as VideoSearch_rating_numRaters,
+	statistics_favoriteCount as VideoSearch_statistics_favoriteCount,
+	statistics_viewCount as VideoSearch_statistics_viewCount,
+	rating_numDislikes as VideoSearch_rating_numDislikes,
+	rating_numLikes as VideoSearch_rating_numLikes,
+	media_category as VideoSearch_media_category,
+	duration as VideoSearch_duration,
+	aspectRatio as VideoSearch_aspectRatio,
+	media_keywords as VideoSearch_media_keywords,
+	media_credit as VideoSearch_media_credit,
+	media_credit_display as VideoSearch_media_credit_display
+FROM
+[http://localhost:5555/QVSource/YouTubeConnectorV2/?table=VideoSearch&appID=&SearchTerm=%22Qlik+Sense%22&AdditionalQuery=%3fcategory%3dTech]
+(qvx) where date#(left(published, 10), 'YYYY-MM-DD') >= '2014-07-24';
+
+LET noRows = NoOfRows('YouTubeConnectorV2_VideoSearch');
+
+for i=0 to $(noRows)-1
+
+	 let videoId = peek('VideoSearch_videoId',$(i),'YouTubeConnectorV2_VideoSearch');
+	 let numComments = peek('VideoSearch_comments_counthint',$(i),'YouTubeConnectorV2_VideoSearch');
+	
+	if (numComments > 0) then
+		YouTubeConnectorV2_Comments:
+		LOAD
+			'$(videoId)' as VideoSearch_videoId,			
+			id as Comments_id,
+			published as Comments_published,
+			date#(left(published, 10) & mid(published, 12, 8), 'YYYY-MM-DDhh:mm:ss') as Comments_published_qvdatetime,
+			date#(left(published, 10), 'YYYY-MM-DD') as Comments_published_qvdate,
+			updated as Comments_updated,
+			date#(left(updated, 10) & mid(updated, 12, 8), 'YYYY-MM-DDhh:mm:ss') as Comments_updated_qvdatetime,
+			date#(left(updated, 10), 'YYYY-MM-DD') as Comments_updated_qvdate,
+			title as Comments_title,
+			title_urlEncoded as Comments_title_urlEncoded,
+			content as Comments_content,
+			content_urlEncoded as Comments_content_urlEncoded,
+			author_name as Comments_author_name,
+			author_uri as Comments_author_uri
+		FROM
+		[http://localhost:5555/QVSource/YouTubeConnectorV2/?table=Comments&appID=&VideoId=$(videoId)]
+		(qvx);
+	ENDIF 
+next
