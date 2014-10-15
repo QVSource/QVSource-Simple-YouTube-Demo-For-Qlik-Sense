@@ -4,4 +4,4 @@ We have placed a copy of the load script in a separate text file so that it can 
 
 Important Update (15/10/2014)
 -----------------------------
-This application was written using Qlik Sense Desktop version 0.96.0. Since this release, Qlik have introduced a 'feature' where the default load script behaviour is to prohibit making load requests from arbitrary URLs. This means that a technique that we discuss below using varaibles to build a URL isn't possible unless you make a change to a Qlik Sense configuration file to enable it. We've put together [a page] (http://wiki.qvsource.com/Disabling-Standard-Mode-In-Qlik-Sense.ashx) that explains how to enable this.
+This application was written using Qlik Sense Desktop version 0.96.0. Since this release, Qlik have introduced a 'feature' where the default load script behaviour is to prohibit making load requests from arbitrary URLs. This means that a technique that we use with varaibles to construct a URL isn't possible unless you make a change to a Qlik Sense configuration file to enable it. We've put together [a page] (http://wiki.qvsource.com/Disabling-Standard-Mode-In-Qlik-Sense.ashx) that explains how to enable this.
